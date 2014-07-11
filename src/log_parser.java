@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.MaskFormatter;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
@@ -40,6 +41,8 @@ import java.awt.Choice;
 import java.awt.Checkbox;
 import javax.swing.JList;
 import javax.swing.Box;
+import javax.swing.JTabbedPane;
+import javax.swing.JFormattedTextField;
 
 
 public class log_parser extends JFrame {
@@ -57,6 +60,14 @@ public class log_parser extends JFrame {
 	private JCheckBox chckbxRadioTechChange;
 	private JCheckBox checkBox_1;
 	private TextField textField_4;
+	private JTabbedPane tabbedPane;
+	private JTabbedPane tabbedPane_1;
+	private JTabbedPane tabbedPane_2;
+	private JTabbedPane tabbedPane_3;
+	private JTabbedPane tabbedPane_4;
+	private JTextField textField_2;
+	private JFormattedTextField frmtdtxtfldBith;
+	private JTextArea txtrSdfgasdfg;
 
 	/**
 	 * Launch the application.
@@ -128,21 +139,21 @@ public class log_parser extends JFrame {
 		textField.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
 		textField.setText("Year");
 		textField.setColumns(10);
-		textField.setBounds(132, 50, 35, 21);
+		textField.setBounds(177, 50, 35, 21);
 		contentPane.add(textField);
 		
 		textField_1 = new JTextField();
 		textField_1.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
 		textField_1.setText("Month");
 		textField_1.setColumns(10);
-		textField_1.setBounds(168, 50, 40, 21);
+		textField_1.setBounds(213, 50, 40, 21);
 		contentPane.add(textField_1);
 		
 		txtDay_1 = new JTextField();
 		txtDay_1.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
 		txtDay_1.setText("Day");
 		txtDay_1.setColumns(10);
-		txtDay_1.setBounds(209, 50, 35, 21);
+		txtDay_1.setBounds(254, 50, 35, 21);
 		contentPane.add(txtDay_1);
 		
 		menuBar = new JMenuBar();
@@ -161,17 +172,12 @@ public class log_parser extends JFrame {
 		contentPane.add(scrollPane);
 		
 		JLabel lblTo = new JLabel("to");
-		lblTo.setBounds(120, 53, 9, 15);
+		lblTo.setBounds(165, 53, 9, 15);
 		contentPane.add(lblTo);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(53, 144, 191, -31);
 		contentPane.add(scrollPane_1);
-		
-		TextField textField_2 = new TextField();
-		textField_2.setBounds(16, 81, 437, 497);
-		textField_2.setText("Before change");
-		contentPane.add(textField_2);
 		
 		JCheckBox chckbxNoService = new JCheckBox("No Service");
 		chckbxNoService.setFont(new Font("Arial", Font.PLAIN, 11));
@@ -201,5 +207,39 @@ public class log_parser extends JFrame {
 		textField_4.setText("Other editor");
 		textField_4.setBounds(459, 336, 108, 242);
 		contentPane.add(textField_4);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(16, 81, 421, 282);
+		contentPane.add(tabbedPane);
+		
+		txtrSdfgasdfg = new JTextArea();
+		txtrSdfgasdfg.setText("sdfgasdfg");
+		tabbedPane.addTab("New tab", null, txtrSdfgasdfg, null);
+		
+		tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addTab("New tab", null, tabbedPane_1, null);
+		
+		tabbedPane_2 = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addTab("New tab", null, tabbedPane_2, null);
+		
+		tabbedPane_3 = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addTab("New tab", null, tabbedPane_3, null);
+		
+		tabbedPane_4 = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addTab("New tab", null, tabbedPane_4, null);
+		
+		textField_2 = new JTextField();
+		textField_2.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
+		textField_2.setText("Day");
+		textField_2.setColumns(10);
+		textField_2.setBounds(119, 50, 35, 21);
+		contentPane.add(textField_2);
+		
+		frmtdtxtfldBith = new JFormattedTextField();
+//		MaskFormatter mask = new MaskFormatter();
+//		mask.setPlaceholderCharacter(arg0);
+		frmtdtxtfldBith.setText("bithday");
+		frmtdtxtfldBith.setBounds(53, 404, 106, 32);
+		contentPane.add(frmtdtxtfldBith);
 	}
 }

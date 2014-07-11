@@ -5,10 +5,8 @@ import java.io.IOException;
 
 public class FileManager extends StringFilter{
 	public FileManager(String keyword) {
-		super(keyword);
-		// TODO Auto-generated constructor stub
 	}
-
+	
 	public static String readFile(String fileName) throws IOException {
 	    BufferedReader br = new BufferedReader(new FileReader(fileName));
 	    try {
@@ -25,4 +23,5 @@ public class FileManager extends StringFilter{
 	        br.close();
 	    }
 	}
+
 }

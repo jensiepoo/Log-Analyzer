@@ -1,5 +1,8 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 
@@ -7,21 +10,18 @@ public class FileManager extends StringFilter{
 	public FileManager(String keyword) {
 	}
 	
-	public static String readFile(String fileName) throws IOException {
-	    BufferedReader br = new BufferedReader(new FileReader(fileName));
-	    try {
-	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
-
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append("\n");
-	            line = br.readLine();
-	        }
-	        return sb.toString();
-	    } finally {
-	        br.close();
-	    }
+	/**
+	 * Save the given text to the given filename.
+	 * @param canonicalFilename Like /Users/al/foo/bar.txt
+	 * @param text All the text you want to save to the file as one String.
+	 * @throws IOException
+	 */
+	public static void writeFile(String canonicalFilename, String text) 
+	throws IOException
+	{
+		  File file = new File (canonicalFilename);
+		  BufferedWriter out = new BufferedWriter(new FileWriter(file)); 
+		  out.write("wtfffffffffffffffffffff");
+		  out.close();
 	}
-
 }

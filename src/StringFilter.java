@@ -30,10 +30,10 @@ public abstract class StringFilter {
 	 * used by Stored as int[int month, int day, int hr, int min, int sec, int ms] 
 	 * @param from
 	 * @param to
-	 * @return 
+	 * @return the absolute value of timeElapsed since there can only be a request and a response per ID. 
 	 */
-	public static int[] timeElapsedInMs(int[] from, int[] to){		
-		return new int[]{-1}; // put in [x] of size 1;
+	public static int timeElapsedInMs(int[] from, int[] to){		
+		return -1; // put in [x] of size 1;
 	}
 	
 	/**
@@ -45,12 +45,15 @@ public abstract class StringFilter {
 		return (log1.substring(log1.lastIndexOf('\n', from)+1, log1.indexOf('\n', from)+1));
 	}
 	
+	
+
 	/**
 	 * This method is used to get values in between [] for matching request and response return 
-	 * in the format [Serv_ID, Msg_ID, Trans_ID]
+	 * in the format [Serv_ID+ Msg_ID+ Trans_ID]
 	 * fromIndex: index where [request] or [response is found]
+	 * Return a concatenated string allows comparison in HashMap
 	 */
-	public String[] matchingID(int fromIndex){
+	public String matchingID(int fromIndex){
 		String x = getLine(log, fromIndex);
 		String sID, mID, tID;
 		int index = x.indexOf("Serv_ID: [")+"Serv_ID: [".length();
@@ -62,7 +65,7 @@ public abstract class StringFilter {
 		index = x.indexOf("Trans_ID: [")+"Trans_ID: [".length();
 		x = x.substring(index);
 		tID = x.substring(0, x.indexOf(']'));
-		return (new String[]{sID, mID, tID});
+		return sID+mID+tID;
 	}
 	
 	/**
@@ -80,7 +83,7 @@ public abstract class StringFilter {
 	}
 	
 	/**
-	 * 	Given a specific index(line) parse the time in [int month, int day, int hr, int min, int sec, int ms] order
+	 * 	Given a specific index(line) parse the time in [int month, int day, int hr, int min, int sec, int ms, index] order
 	 */
 	public static int[] time(String log, int index){
 		int[] time = new int[6];
@@ -91,6 +94,7 @@ public abstract class StringFilter {
 		time[3] = (Integer.parseInt(line.substring(9, 11)));
 		time[4] = (Integer.parseInt(line.substring(12, 14)));
 		time[5] = (Integer.parseInt(line.substring(15, 18)));
+		time[6] = index;
 		return time;
 	}
 }

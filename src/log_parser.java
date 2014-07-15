@@ -23,6 +23,8 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JMenuBar;
@@ -43,36 +45,25 @@ import javax.swing.JList;
 import javax.swing.Box;
 import javax.swing.JTabbedPane;
 import javax.swing.JFormattedTextField;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import java.awt.GridBagLayout;
+import javax.swing.JSplitPane;
+import java.awt.GridLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import net.miginfocom.swing.MigLayout;
 
 
 public class log_parser extends JFrame {
-
-	private JPanel contentPane;
-	private JTextField txtAsdfasdf;
-	private JTextField txtMonth;
-	private JTextField txtDay;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField txtDay_1;
-	private JMenuBar menuBar;
-	private JMenu mnFile;
-	private JMenuItem mntmOpenFile;
-	private JCheckBox chckbxRadioTechChange;
-	private JCheckBox checkBox_1;
-	private TextField textField_4;
-	private JTabbedPane tabbedPane;
-	private JTabbedPane tabbedPane_1;
-	private JTabbedPane tabbedPane_2;
-	private JTabbedPane tabbedPane_3;
-	private JTabbedPane tabbedPane_4;
-	private JTextField textField_2;
-	private JFormattedTextField frmtdtxtfldBith;
 	private JTextArea txtrSdfgasdfg;
+	private JMenuBar menuBar;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		JFileChooser j = new JFileChooser();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -89,157 +80,21 @@ public class log_parser extends JFrame {
 	 * Create the frame.
 	 */
 	public log_parser() {
-		setResizable(false);
 		setTitle("Log Parser");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 583, 616);
-		contentPane = new JPanel();
-		contentPane.setToolTipText("");
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("QMI Timeouts");
-		chckbxNewCheckBox.setFont(new Font("Arial", Font.PLAIN, 11));
-		chckbxNewCheckBox.setBounds(-4, 23, 89, 21);
-		contentPane.add(chckbxNewCheckBox);
-		
-		JCheckBox chckbxDialFlow = new JCheckBox("Dial Flow");
-		chckbxDialFlow.setFont(new Font("Arial", Font.PLAIN, 11));
-		chckbxDialFlow.setBounds(85, 23, 74, 21);
-		contentPane.add(chckbxDialFlow);
-		
-		JCheckBox chckbxDataCall = new JCheckBox("Data Call");
-		chckbxDataCall.setFont(new Font("Arial", Font.PLAIN, 11));
-		chckbxDataCall.setBounds(155, 23, 67, 21);
-		contentPane.add(chckbxDataCall);
-		
-		txtAsdfasdf = new JTextField();
-		txtAsdfasdf.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		txtAsdfasdf.setText("Year");
-		txtAsdfasdf.setBounds(6, 50, 35, 21);
-		contentPane.add(txtAsdfasdf);
-		txtAsdfasdf.setColumns(10);
-		
-		txtMonth = new JTextField();
-		txtMonth.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		txtMonth.setText("Month");
-		txtMonth.setColumns(10);
-		txtMonth.setBounds(42, 50, 40, 21);
-		contentPane.add(txtMonth);
-		
-		txtDay = new JTextField();
-		txtDay.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		txtDay.setText("Day");
-		txtDay.setColumns(10);
-		txtDay.setBounds(83, 50, 35, 21);
-		contentPane.add(txtDay);
-		
-		textField = new JTextField();
-		textField.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		textField.setText("Year");
-		textField.setColumns(10);
-		textField.setBounds(177, 50, 35, 21);
-		contentPane.add(textField);
-		
-		textField_1 = new JTextField();
-		textField_1.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		textField_1.setText("Month");
-		textField_1.setColumns(10);
-		textField_1.setBounds(213, 50, 40, 21);
-		contentPane.add(textField_1);
-		
-		txtDay_1 = new JTextField();
-		txtDay_1.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		txtDay_1.setText("Day");
-		txtDay_1.setColumns(10);
-		txtDay_1.setBounds(254, 50, 35, 21);
-		contentPane.add(txtDay_1);
+		setBounds(100, 100, 466, 354);
 		
 		menuBar = new JMenuBar();
-		menuBar.setAutoscrolls(true);
-		menuBar.setBounds(0, 0, 577, 21);
-		contentPane.add(menuBar);
+		setJMenuBar(menuBar);
 		
-		mnFile = new JMenu("File    ");
+		JMenu mnFile = new JMenu("File ");
 		menuBar.add(mnFile);
 		
-		mntmOpenFile = new JMenuItem("Open File...");
+		JMenuItem mntmOpenFile = new JMenuItem("Open File...                         ");
 		mnFile.add(mntmOpenFile);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(401, 163, 2, 2);
-		contentPane.add(scrollPane);
-		
-		JLabel lblTo = new JLabel("to");
-		lblTo.setBounds(165, 53, 9, 15);
-		contentPane.add(lblTo);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(53, 144, 191, -31);
-		contentPane.add(scrollPane_1);
-		
-		JCheckBox chckbxNoService = new JCheckBox("No Service");
-		chckbxNoService.setFont(new Font("Arial", Font.PLAIN, 11));
-		chckbxNoService.setBounds(224, 23, 79, 21);
-		contentPane.add(chckbxNoService);
-		
-		Component horizontalGlue = Box.createHorizontalGlue();
-		horizontalGlue.setBounds(103, 191, 1, 1);
-		contentPane.add(horizontalGlue);
-		
-		chckbxRadioTechChange = new JCheckBox("Radio Tech Change");
-		chckbxRadioTechChange.setFont(new Font("Arial", Font.PLAIN, 11));
-		chckbxRadioTechChange.setBounds(299, 23, 122, 21);
-		contentPane.add(chckbxRadioTechChange);
-		
-		checkBox_1 = new JCheckBox("No Service");
-		checkBox_1.setFont(new Font("Arial", Font.PLAIN, 11));
-		checkBox_1.setBounds(423, 23, 79, 21);
-		contentPane.add(checkBox_1);
-		
-		TextField textField_3 = new TextField();
-		textField_3.setText("Error Handling");
-		textField_3.setBounds(459, 81, 108, 242);
-		contentPane.add(textField_3);
-		
-		textField_4 = new TextField();
-		textField_4.setText("Other editor");
-		textField_4.setBounds(459, 336, 108, 242);
-		contentPane.add(textField_4);
-		
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(16, 81, 421, 282);
-		contentPane.add(tabbedPane);
-		
-		txtrSdfgasdfg = new JTextArea();
-		txtrSdfgasdfg.setText("sdfgasdfg");
-		tabbedPane.addTab("New tab", null, txtrSdfgasdfg, null);
-		
-		tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("New tab", null, tabbedPane_1, null);
-		
-		tabbedPane_2 = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("New tab", null, tabbedPane_2, null);
-		
-		tabbedPane_3 = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("New tab", null, tabbedPane_3, null);
-		
-		tabbedPane_4 = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("New tab", null, tabbedPane_4, null);
-		
-		textField_2 = new JTextField();
-		textField_2.setToolTipText("Set duration of log to be analyzed. \r\nDefault to analyze the entire log.");
-		textField_2.setText("Day");
-		textField_2.setColumns(10);
-		textField_2.setBounds(119, 50, 35, 21);
-		contentPane.add(textField_2);
-		
-		frmtdtxtfldBith = new JFormattedTextField();
-//		MaskFormatter mask = new MaskFormatter();
-//		mask.setPlaceholderCharacter(arg0);
-		frmtdtxtfldBith.setText("bithday");
-		frmtdtxtfldBith.setBounds(53, 404, 106, 32);
-		contentPane.add(frmtdtxtfldBith);
+		JMenuItem mntmSaveFileCtrl = new JMenuItem("Save As...                              Ctrl + S");
+		mnFile.add(mntmSaveFileCtrl);
+		getContentPane().setLayout(new GridLayout(1, 0, 0, 0));
 	}
 }

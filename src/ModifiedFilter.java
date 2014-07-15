@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,7 +15,7 @@ public class ModifiedFilter extends StringFilter{
 	private String issue;
 	private String start;
 	private String end;
-	private Hashtable<String[], int[]> ht;
+	private HashMap<String, int[]> ht = new HashMap<String, int[]>();
 
 	public ModifiedFilter(String issue){
 		this.issue = issue;
@@ -48,22 +50,27 @@ public class ModifiedFilter extends StringFilter{
 	 * [request] and [response] in a hashtable. During the process of recording, when it finds 
 	 * a second instance where the String key matches, calculate the time elapsed. 
 	 */
-	public Hashtable<String[], int[]> recordQMI(){
+	public ArrayList<int[]> recordQMI(int limit){
 		String copy = getLog();
-		int foundIndex;
+		int foundIndex = 0;
+		ArrayList<int[]> arr = new ArrayList<int[]>();
 		
-		while (copy.indexOf("[Request]") != -1 && copy.indexOf("[Response]")!= -1){
-			int req = copy.indexOf("[Request]"); //position of request
-			int res = copy.indexOf("[Response]"); // position of response
+		while (copy.indexOf("[Request]", foundIndex) != -1 && copy.indexOf("[Response]", foundIndex)!= -1){
+			int req = copy.indexOf("[Request]", foundIndex); //position of request
+			int res = copy.indexOf("[Response]", foundIndex); // position of response
 			if(req < res && req != -1){
 				foundIndex = req;
-				if(!ht.containsKey(matchingID(foundIndex))){     //!!!!make sure hashtable uses .equals!!!!!
+				if(!ht.containsKey(matchingID(foundIndex))){ //if not found, add it to hashtable. 
 					ht.put(matchingID(foundIndex), time(copy, foundIndex)); 
 				}
 				else{
-					int[] duration = timeElapsedInMs(ht.get(matchingID(foundIndex)), time(copy, foundIndex));
-					ht.remove(matchingID(foundIndex));
-					ht.put(matchingID(foundIndex), duration); 
+					int[] value = ht.get(matchingID(foundIndex));
+					int[] value2 = time(copy, foundIndex);
+					int duration = timeElapsedInMs(value, value2);
+					if(duration >= limit){
+						arr.add(new int[]{value[6], value2[6]});
+						ht.remove(matchingID(foundIndex));
+					}
 				}
 			}
 			else{
@@ -72,33 +79,31 @@ public class ModifiedFilter extends StringFilter{
 					ht.put(matchingID(foundIndex), time(copy, foundIndex)); 
 				}
 				else{
-					int[] duration = timeElapsedInMs(ht.get(matchingID(foundIndex)), time(copy, foundIndex));
-					ht.remove(matchingID(foundIndex));
-					ht.put(matchingID(foundIndex), duration); 
+					int[] value = ht.get(matchingID(foundIndex));
+					int[] value2 = time(copy, foundIndex);
+					int duration = timeElapsedInMs(value, value2);
+					if(duration >= limit){
+						arr.add(new int[]{value[6], value2[6]});
+						ht.remove(matchingID(foundIndex));
+					}
 				}
-			}
-			copy = copy.substring(foundIndex + 3);
-		}	
-		return ht;
+			foundIndex ++; // increment so indexOf wouldn't find the same index
+			}	
+		}
+		return arr;
 	}
-	
-	
+
 	/**
-	 * Returns 1 if a set is an instance of qmi timeout
-	 * 0 if not
-	 * -1 if there is a cut log, i.e. a request does not get a response.
+	 * 
+	 * @param ht
+	 * @return true if log has been cut, false if the log is complete
 	 */
-	public int qmiTO(Hashtable<String[], int[]> ht){
-		Set<Entry<String[], int[]>> set = ht.entrySet();
-		Iterator<Entry<String[], int[]>> it = set.iterator();
-		
-		 while (it.hasNext()) {
-		      Map.Entry<String[], int[]> entry = it.next();
-		      System.out.println(entry.getKey() + " : " + entry.getValue());
-		      if(entry.getValue())
-		    }
-		return false;
-		return 0;
-		
+	public boolean cutLog(Hashtable<String[], int[]> ht){
+		if(ht.size() > 0){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 }

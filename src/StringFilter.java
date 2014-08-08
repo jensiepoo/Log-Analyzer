@@ -1,13 +1,11 @@
 import java.awt.Color;
-import java.awt.TextArea;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 
-import javax.swing.JColorChooser;
+import javax.swing.JTextPane;
 
 
 
@@ -16,42 +14,32 @@ import javax.swing.JColorChooser;
  * @author Jensen_kuo
  *
  */
-public class StringFilter implements ActionListener{
-	protected String log;
+public class StringFilter{
+	private String log;
 	private Color color; 
-	private TextArea textArea;
-	private String issue; 
-	private ArrayList<Integer> indices = new ArrayList<Integer>();
-
-	public StringFilter(TextArea textArea, String issue){
-		this.textArea = textArea;
-		this.issue = issue; 
+	private JTextPane textArea;
+	private Hashtable<Integer, Color> ht = new Hashtable<Integer, Color>();
+	private String str;
+	
+	
+	//default Constructor
+	public StringFilter(){
 	}
 	
-	public StringFilter(String log) {
-		setLog(log);
+	public StringFilter(JTextPane textArea, Color color, String str){
+		this.textArea = textArea; 
+		this.color = color; 
+		log = textArea.getText();
+		this.str = str;
 	}
 	
-	public StringFilter(String log, int r, int g, int b){
-		setLog(log);
-		setColor(new Color(r, g, b));
-	}
-	
-	public void setLog(String log){
-		this.log = log;
-	}
-	
-	public String getLog(){
-		return log;
+	public StringFilter(JTextPane textArea, String str){
+		this.textArea = textArea; 
+		log = textArea.getText();
+		this.str = str;
 	}
 
-	public Color getColor() {
-		return color;
-	}
 
-	public void setColor(Color color) {
-		this.color = color;
-	}
 	/**
 	 * check time elapsed(in ms) between two times, if second input time is earlier than first input time, output -1
 	 * used by Stored as int[int month, int day, int hr, int min, int sec, int ms] 
@@ -84,7 +72,7 @@ public class StringFilter implements ActionListener{
 	 * @return a line that includes the index
 	 */
 	public static String getLine(String log1, int from){
-		return (log1.substring(log1.lastIndexOf('\n', from)+1, log1.indexOf('\n', from)+1));
+		return (log1.substring(log1.lastIndexOf('\n', from)+1, log1.indexOf('\n', from)));
 	}
 	
 	/**
@@ -93,10 +81,9 @@ public class StringFilter implements ActionListener{
 	 * fromIndex: index where [request] or [response is found]
 	 * Return a concatenated string allows comparison in HashMap
 	 */
-	public String matchingID(int fromIndex){
+	public static String matchingID(String log, int fromIndex){
 		String x = getLine(log, fromIndex);
 		String sID, mID, tID;
-		System.out.println("this is log" + log);
 		int index = x.indexOf("Serv_ID: [")+"Serv_ID: [".length();
 		x = x.substring(index);
 		sID = x.substring(0, x.indexOf(']'));
@@ -110,28 +97,10 @@ public class StringFilter implements ActionListener{
 	}
 	
 	/**
-	 * @param log
-	 * @return an arrayList of all the no service indices, can later be added to String using getLine.
-	 */
-	public ArrayList<Integer> noService(int fromIndex){
-		if (log.indexOf("VOICE_REGISTRATION_STATE {", fromIndex) != -1){
-			if (log.charAt(log.indexOf("VOICE_REGISTRATION_STATE {", fromIndex)+ "VOICE_REGISTRATION_STATE {".length()) == '1' ||
-					log.charAt(log.indexOf("VOICE_REGISTRATION_STATE {", fromIndex)+ "VOICE_REGISTRATION_STATE {".length()) == '5'){
-				indices.add(log.indexOf("VOICE_REGISTRATION_STATE {", fromIndex));
-				noService(log.indexOf("VOICE_REGISTRATION_STATE {", fromIndex)+1);
-			}
-			else{
-				noService(log.indexOf("VOICE_REGISTRATION_STATE {", fromIndex)+1);
-			}
-		}
-		return indices;
-	}
-	
-	/**
 	 * 	Given a specific index(line) parse the time in [int month, int day, int hr, int min, int sec, int ms, index] order
 	 */
 	public static String[] time(String log, int index){
-		String[] time = new String[6];
+		String[] time = new String[7];
 		String line = getLine(log, index);
 		time[0] = line.substring(0, 2);
 		time[1] = line.substring(3, 5);
@@ -146,7 +115,7 @@ public class StringFilter implements ActionListener{
 	/**
 	 * Parses the segment of radio log in the specified time frame. 
 	 */
-	public String duration(String[] from, String[] to){
+	public static String duration(String log, String[] from, String[] to){
 		int x = log.indexOf(from[0]+"-"+from[1]+" "+from[2]+":"+from[3]+":"+from[4]+"."+from[5]);
 		int y = log.lastIndexOf(to[0]+"-"+to[1]+" "+to[2]+":"+to[3]+":"+to[4]+"."+to[5]);
 		int z = log.indexOf('\n', y);
@@ -154,25 +123,26 @@ public class StringFilter implements ActionListener{
 		return a;
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		if(issue.equals("No Service")){
-			JColorChooser chooser = new JColorChooser();
-			
-			this.log = textArea.getText();
-			this.noService(0);
-			
-			
-//			System.out.println(this.noService(0).size());
-//			java.util.Iterator<Integer> iterator = indices.iterator();
-//			while(iterator.hasNext()){
-//				System.out.println(getLine(log, iterator.next()));
-//			}
+	/**
+	 * @param str
+	 * updates the ArrayList of indices and later to be parsed by OutputParser.
+	 */
+	public Hashtable<Integer, Color> lookup(String str){
+		int counter = 0;
+		while(log.indexOf(str, counter)!= -1){
+			ht.put(log.indexOf(str, counter), color);
+			counter = log.indexOf(str, counter)+1;
 		}
-		
-		if(issue.equals("QMI TO")){
-			
+		return ht;
+	}
+	
+	public ArrayList<Integer> lookupArr(String str){
+		int counter = 0;
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		while(log.indexOf(str, counter)!= -1){
+			arr.add(log.indexOf(str, counter));
+			counter = log.indexOf(str, counter)+1;
 		}
+		return arr;
 	}
 }

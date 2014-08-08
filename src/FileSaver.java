@@ -1,29 +1,35 @@
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JTextPane;
 
 
 public class FileSaver extends StringFilter implements ActionListener{
-	private String text = "";
-	private TextArea textArea;
+	private String text;
+	private JTextPane textArea;
 	
 	public FileSaver() {
-	}
+	} 
+	
 	public FileSaver(String text) {
-		this.text = text;
+		this.setText(text);
 	}
 	
-	public FileSaver(TextArea textArea) {
+	public FileSaver(JTextPane textArea) {
 		this.textArea = textArea;
+	}
+	
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
 	}
 	
 	/**
@@ -43,7 +49,7 @@ public class FileSaver extends StringFilter implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {				//saving a file and saves content in Text area into a named file
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(); 
 	    int returnVal = chooser.showSaveDialog(null);
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {
 	    	try {
@@ -54,5 +60,6 @@ public class FileSaver extends StringFilter implements ActionListener{
 			}
 	    }
 	}
+
 }
 

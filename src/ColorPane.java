@@ -1,51 +1,53 @@
-
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Hashtable;
 
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 
-public class ColorPane extends JTextPane {
-  public void append(Color c, String s) { // better implementation--uses
-                      // StyleContext
-    StyleContext sc = StyleContext.getDefaultStyleContext();
-    AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY,
-        StyleConstants.Foreground, c);
+public class ColorPane implements ActionListener {
+	private JCheckBox jcheck;
+	private String keyword;
+	private Hashtable<String, Color> ht;
+	private Config config;
 
-    int len = getDocument().getLength(); // same value as
-                       // getText().length();
-    setCaretPosition(len); // place caret at the end (with no selection)
-    setCharacterAttributes(aset, false);
-    replaceSelection(s); // there is no selection, so inserts at caret
-  }
-
-	public void append(String x) {
-		this.setText(x);
+	public ColorPane(JCheckBox jcheck, Hashtable<String, Color> ht,
+			String keyword, Config config) {
+		this.jcheck = jcheck;
+		this.ht = ht;
+		this.keyword = keyword;
+		this.config = config;
 	}
 
-//  public static void main(String argv[]) {
-//
-//    ColorPane pane = new ColorPane();
-//    for (int n = 1; n <= 400; n += 1) {
-//      if (isPrime(n)) {
-//        pane.append(Color.red, String.valueOf(n) + ' ');
-//      } else if (isPerfectSquare(n)) {
-//        pane.append(Color.blue, String.valueOf(n) + ' ');
-//      } else {
-//        pane.append(Color.black, String.valueOf(n) + ' ');
-//      }
-//    }
-//
-//    JFrame f = new JFrame("ColorPane example");
-//    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//    f.setContentPane(new JScrollPane(pane));
-//    f.setSize(600, 400);
-//    f.setVisible(true);
-//  }
-}
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		JFrame guiFrame = new JFrame();
+		Color selectedColor = JColorChooser.showDialog(guiFrame,
+				"Pick a Color", Color.black);
+		jcheck.setForeground(selectedColor);
 
-           
+		if (selectedColor != null) {
+			try {
+				config.update(keyword, selectedColor);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // keyword,
+		} else {
+			try {
+				config.update(keyword);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // item without selected color
+		}
+		if (jcheck.isSelected()) {
+			ht.put(keyword, jcheck.getForeground());
+		} else {
+			ht.remove(keyword);
+		}
+	}
+}

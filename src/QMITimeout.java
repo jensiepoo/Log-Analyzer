@@ -7,7 +7,7 @@ public class QMITimeout extends StringFilter{
 	private String log; 
 	private HashMap<String, String[]> ht = new HashMap<String, String[]>();
 	private ArrayList<String[]> arr = new ArrayList<String[]>();
-	public QMITimeout(JTextPane textArea, Color color){
+	public QMITimeout(JTextPane textArea){
 		log = textArea.getText();
 	}
 	
@@ -25,19 +25,28 @@ public class QMITimeout extends StringFilter{
 		while (copy.indexOf("[Request]", foundIndex) != -1 || copy.indexOf("[Response]", foundIndex)!= -1){
 			int req = copy.indexOf("[Request]", foundIndex); //position of request
 			int res = copy.indexOf("[Response]", foundIndex); // position of response
+			
+			//when request is found before a response is found
 			if(req < res && req != -1){
-				foundIndex = req;
-				if(!ht.containsKey(matchingID(log, foundIndex))){ //if not found, add it to hashtable. 
+				foundIndex = req; 
+				
+				//The same set of ID's has not been found in the hashtable. 
+				//Add it to hashtable, along with its time. 
+				if(!ht.containsKey(matchingID(log, foundIndex))){
 					ht.put(matchingID(log, foundIndex), time(copy, foundIndex)); 
 				}
 				else{
+					//If the same set of ID's has been found in the hashtable.
+					//Calculate the duration between request and response
+					//if it exceeds the limit that user inputed, 
+					//place in an array and outputs to the JTextPane. 
 					String[] value = ht.get(matchingID(log, foundIndex));
 					String[] value2 = time(copy, foundIndex);
 					int duration = timeElapsedInMs(value, value2);
 					if(duration >= limit){
 						arr.add(new String[]{value[6], value2[6]});
-						ht.remove(matchingID(log, foundIndex));
 					}
+					ht.remove(matchingID(log, foundIndex));
 				}
 			}
 			else{
@@ -51,8 +60,8 @@ public class QMITimeout extends StringFilter{
 					int duration = timeElapsedInMs(value, value2);
 					if(duration >= limit){
 						arr.add(new String[]{value[6], value2[6]});
-						ht.remove(matchingID(log, foundIndex));
 					}
+					ht.remove(matchingID(log, foundIndex));
 				}
 			}	
 			foundIndex ++; // increment so indexOf wouldn't find the same index

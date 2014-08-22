@@ -1,1 +1,0 @@
-radio, Color: java.awt.Color[r=255,g=51,b=204]

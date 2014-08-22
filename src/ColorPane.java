@@ -14,6 +14,18 @@ public class ColorPane implements ActionListener {
 	private Hashtable<String, Color> ht;
 	private Config config;
 
+
+	/**
+	 * @param jcheck
+	 * @param ht
+	 * @param keyword
+	 * @param config
+	 * 	This class gives the user the option of choosing a filter color
+	 * for the new keyword entered. Whenever the checkbox is checked
+	 * Add the keyword and filter to the configuration file and 
+	 * hashtable for the list of strings to be filtered. 
+	 * Whenever the checkbox is unchecked, remove from hashtable. 
+	 */
 	public ColorPane(JCheckBox jcheck, Hashtable<String, Color> ht,
 			String keyword, Config config) {
 		this.jcheck = jcheck;
@@ -24,11 +36,15 @@ public class ColorPane implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		//This constructs a new window of color chooser, which allows 
+		//the user to choose the color for that particular string filter.
 		JFrame guiFrame = new JFrame();
 		Color selectedColor = JColorChooser.showDialog(guiFrame,
 				"Pick a Color", Color.black);
 		jcheck.setForeground(selectedColor);
 
+		//if the user chose a color, update the configuration file along with
+		//its color filter.
 		if (selectedColor != null) {
 			try {
 				config.update(keyword, selectedColor);
@@ -44,6 +60,8 @@ public class ColorPane implements ActionListener {
 				e.printStackTrace();
 			} // item without selected color
 		}
+		
+		//if the checkbox is unchecked, remove from hashtable. 
 		if (jcheck.isSelected()) {
 			ht.put(keyword, jcheck.getForeground());
 		} else {

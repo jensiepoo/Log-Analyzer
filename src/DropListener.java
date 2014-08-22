@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -19,15 +20,36 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 public class DropListener extends FileOpener implements DropTargetListener {
+	
+	/**
+	 * @param tabbedPane
+	 * @param textArea
+	 * @param checkboxarr
+	 * @param jpane
+	 * @param config
+	 * @param txtKeyword
+	 * @param sb1
+	 * @param ht1
+	 * @param from
+	 * @param to
+	 * @param jft
+	 * @throws IOException
+	 * This constructs a drag and drop file loader, and extends and 
+	 * calls methods from FileOpener. 
+	 */
 	public DropListener(JTabbedPane tabbedPane, JTextPane textArea,
 			Hashtable<String, JCheckBox> checkboxarr, JPanel jpane,
 			Config config, JTextField txtKeyword, StringBuilder sb1,
-			Hashtable<String, Color> ht1) {
+			Hashtable<String, Color> ht1, JFormattedTextField from, 
+			JFormattedTextField to, JFormattedTextField jft) throws IOException {
 		super(tabbedPane, textArea, checkboxarr, jpane, config, txtKeyword,
-				sb1, ht1);
+				sb1, ht1, from, to, jft);
 		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
+	 */
 	@Override
 	public void drop(DropTargetDropEvent event) {
 		// Accept copy drops
@@ -47,33 +69,24 @@ public class DropListener extends FileOpener implements DropTargetListener {
 					List<File> files = (List) transferable.getTransferData(flavor);
 					String x = "";
 					enable();
-					// Loop them through
 					for (File file : files) {
-						// Print out the file path
 						try {
-							x = x
-									+ "File Name: "
-									+ file.getName()
-									+ '\n'
-									+ '\n'
-									+ readFile(file)
-									+ "=====================================End Of File===================================="
-									+ '\n';
-							// tabName = w.getName().substring(0,
-							// w.getName().indexOf('_'));
+							x = readFile(file);
+							JTextPane jtp = new JTextPane();
+							jtp.setText(x);
+							JScrollPane scrollPane = new JScrollPane();
+//							scrollPane.setViewportView(jtp);
+//							textArea.setText(jtp.getText());
+//							textArea.setText(x);
+							scrollPane.setViewportView(jtp);
+							scrollPane.setName(file.getName());
+							tabbedPane.addTab(file.getName(), scrollPane);
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						config.setDir(file.getPath());
 					}
-					if (log.getLength() > 0) {
-						tabbedPane.removeAll();
-					}
-					textArea.setText(x);
-					JScrollPane scrollPane = new JScrollPane();
-					scrollPane.setViewportView(textArea);
-					tabbedPane.addTab("radio log", scrollPane);
 				}
 			} catch (Exception e) {
 

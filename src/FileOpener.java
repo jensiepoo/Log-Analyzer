@@ -6,75 +6,91 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.StyledDocument;
 
 public class FileOpener implements ActionListener {
 	protected JTabbedPane tabbedPane;
 	// private String tabName = "";
-	protected JTextPane textArea;
-	protected StyledDocument log;
-	private Hashtable<String, Color> ht = new Hashtable<String,Color>(); // loading configuration file
+
+	private Hashtable<String, Color> ht = new Hashtable<String, Color>(); // loading
+																			// configuration
+																			// file
 	private File f = new File(System.getProperty("user.dir")
-			+ "\\src\\config.txt");
+			+ "\\config.txt"); //\\src
 	protected Config config;
+	
 	// Keeps a copy of all the checkboxes for further manipulation later.
 	private Hashtable<String, JCheckBox> checkboxarr;
 	private JTextField txtKeyword;
 	private JPanel jpane;
+	
+	private StringBuilder sb1; // for configurationfile
+	private Hashtable<String, Color> ht1; // Issue and color hashtable
+	private ArrayList<String> text = new ArrayList<String>();
+	private int counter; // used to check how many times file opener has been
+							// clicked.
+	private JTextPane textArea = new JTextPane();
+	private JFormattedTextField from, to, jft;
 
-	private StringBuilder sb1; //for configurationfile
-	private Hashtable<String, Color> ht1; //Issue and color hashtable
-
+	
+	/**
+	 * @param tabbedPane
+	 * @param textArea
+	 * @param checkboxarr
+	 * @param jpane
+	 * @param config
+	 * @param txtKeyword
+	 * @param sb1
+	 * @param ht1
+	 * @param from
+	 * @param to
+	 * @param jft
+	 * @throws IOException
+	 * Constructs a fileopener, and prints out the text into the scrollpane
+	 * in the tabbedpane. 
+	 */
 	public FileOpener(JTabbedPane tabbedPane, JTextPane textArea,
 			Hashtable<String, JCheckBox> checkboxarr, JPanel jpane,
-			Config config, JTextField txtKeyword, StringBuilder sb1, 
-			Hashtable<String, Color> ht1) {
+			Config config, JTextField txtKeyword, StringBuilder sb1,
+			Hashtable<String, Color> ht1, JFormattedTextField from,
+			JFormattedTextField to, JFormattedTextField jft) throws IOException {
 		this.tabbedPane = tabbedPane;
-		this.textArea = textArea;
-		log = textArea.getStyledDocument();
 		this.checkboxarr = checkboxarr;
 		this.jpane = jpane;
 		this.config = config;
 		this.txtKeyword = txtKeyword;
-		this.sb1 = sb1; 
-		this.ht1 = ht1; 
+		this.sb1 = sb1;
+		this.ht1 = ht1;
+		this.from = from;
+		this.to = to;
+		this.jft = jft;
+		this.textArea = textArea;
+		
+//		f.createNewFile();
 	}
 
-	public void readConfig() throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader(f));
-		try {
-			
-			String line = br.readLine();
-//			line = br.readLine();
-
-			while (line != null) {
-				sb1.append(line);
-				sb1.append("\n");
-				line = br.readLine();
-			}
-		} finally {
-			br.close();
-		}
-	}
-	
-
+	/**
+	 * @param fileName
+	 * @return Text read from a particular file. 
+	 * @throws IOException
+	 */
 	public String readFile(File fileName) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
-		StringBuilder sb = new StringBuilder(); //for file text
+		StringBuilder sb = new StringBuilder(); // for file text
 		try {
-			
 			String line = br.readLine();
 
 			while (line != null) {
@@ -87,7 +103,14 @@ public class FileOpener implements ActionListener {
 			br.close();
 		}
 	}
-
+	
+	
+	/**
+	 * @throws IOException
+	 * Given the configuration file, get the color and keyword, and place
+	 * into the hashtable of keywords along with color for other methods to 
+	 * look up.
+	 */
 	public void update() throws IOException {
 		BufferedReader br1 = new BufferedReader(new FileReader(f));
 		try {
@@ -98,7 +121,8 @@ public class FileOpener implements ActionListener {
 					ht.put(line.substring(0, line.indexOf(',')), new Color(
 							g[0], g[1], g[2]));
 				} else {
-					ht.put(line.substring(0, line.indexOf(',')), new Color(0,0,0));
+					ht.put(line.substring(0, line.indexOf(',')), new Color(0,
+							0, 0));
 				}
 				line = br1.readLine();
 			}
@@ -107,8 +131,11 @@ public class FileOpener implements ActionListener {
 		}
 	}
 
-	// helper method
-	// Color: java.awt.Color[r=0,g=0,b=0]
+	
+	/**
+	 * @param text
+	 * @return int list of RGB parsed from the format [r=x, g=y, b=z].
+	 */
 	public static int[] getColor(String text) {
 		int[] rgb = new int[3];
 		String x, y, z;
@@ -123,27 +150,43 @@ public class FileOpener implements ActionListener {
 		rgb[2] = Integer.parseInt(z);
 		return rgb;
 	}
-	
-	
-	public void enable(){
-		for(JCheckBox jcb : checkboxarr.values()){
+
+	/**
+	 * Enables the default checkboxes and time frame setting. 
+	 */
+	public void enable() {
+		for (JCheckBox jcb : checkboxarr.values()) {
 			jcb.setEnabled(true);
 		}
-		txtKeyword.setEditable(true);
-		try {
-			readConfig();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		txtKeyword.setEnabled(true);
+		from.setEnabled(true);
+		to.setEnabled(true);
+		// try {
+		// readConfig();
+		// } catch (IOException e2) {
+		// // TODO Auto-generated catch block
+		// e2.printStackTrace();
+		// }
 	}
+
 	
-	public void setup() throws IOException{
-		textArea.removeAll();
-		String x = "";
+	/**
+	 * @throws IOException
+	 * 
+	 * This method creates a file chooser
+	 * gets all the files and tab the text into the scrollpane. 
+	 * 
+	 */
+	public void setup() throws IOException {
+		String x = ""; //constructs the text
 		
+		//FileChooser with the default directory set to the directory 
+		//last opened. 
 		JFileChooser chooser = new JFileChooser(config.getDir());
+		
 		chooser.setDragEnabled(true);
+		
+		//allows multiple file import. 
 		chooser.setMultiSelectionEnabled(true);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"txt files", "txt");
@@ -152,40 +195,44 @@ public class FileOpener implements ActionListener {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			for (File w : chooser.getSelectedFiles()) {
 				try {
-					x = x
-							+ "File Name: "
-							+ w.getName()
-							+ '\n'
-							+ '\n'
-							+ readFile(w)
-							+ "=====================================End Of File===================================="
-							+ '\n';
-					// tabName = w.getName().substring(0,
-					// w.getName().indexOf('_'));
+					x = readFile(w);
+					//creates a new textpane for every txt file. 
+					JTextPane jtp = new JTextPane();
+					jtp.setText(x);
+					
+					//creates a new scrollpane for every txt file. 
+					JScrollPane scrollPane = new JScrollPane();
+
+					scrollPane.setViewportView(jtp);
+					scrollPane.setName(w.getName());
+					
+					jtp.setCaretPosition(0);
+					jtp.getCaret().setVisible(true);
+					//add a new tab
+					tabbedPane.addTab(w.getName(), scrollPane);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				config.setDir(w.getPath());
+				config.setDir(w.getPath());	//update the last-opened directory
 			}
-			if (log.getLength() > 0) {
-				tabbedPane.removeAll();
-			}
-			textArea.setText(x);
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setViewportView(textArea);
-			tabbedPane.addTab("radio log", scrollPane);
 		}
 	}
 
-	public void setupCheck(){
+	
+	/**
+	 * Updates the fields during the first file load. Read the configuration file
+	 * and loads all the checkboxes in the config file. 
+	 */
+	public void setupCheck() {
 		if (!ht.isEmpty()) {
 			// loading configuration when first booted up.
 			Set<String> set = ht.keySet();
 			Iterator<String> iter = set.iterator();
 			while (iter.hasNext()) {
 				final String keyword = iter.next();
-				// loading non default checkboxes into jpane.
+				
+				// loading non default checkboxes(other than the 5)into jpane.
 				if (!keyword.equals("dial") && !keyword.equals("data")
 						&& !keyword.equals("no") && !keyword.equals("radio")
 						&& !keyword.equals("qmi")) {
@@ -194,13 +241,15 @@ public class FileOpener implements ActionListener {
 					gbc_chckbxNewCheckBox.fill = GridBagConstraints.HORIZONTAL;
 					gbc_chckbxNewCheckBox.gridy = 0;
 
+					//update colors of checkboxes. 
 					chckbxNewCheckBox.setForeground(ht.get(keyword));
 					jpane.add(chckbxNewCheckBox, gbc_chckbxNewCheckBox);
 					jpane.updateUI();
 					chckbxNewCheckBox.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (chckbxNewCheckBox.isSelected()) {
-								ht1.put(keyword, chckbxNewCheckBox.getForeground());
+								ht1.put(keyword,
+										chckbxNewCheckBox.getForeground());
 							} else {
 								ht1.remove(keyword);
 							}
@@ -208,7 +257,7 @@ public class FileOpener implements ActionListener {
 					});
 
 					PopupMenu pm = new PopupMenu(jpane, chckbxNewCheckBox, ht,
-							keyword, checkboxarr, config);
+							keyword, checkboxarr, config, jft);
 					chckbxNewCheckBox.addMouseListener(pm);
 				} else { // default 5 checkboxes along with colors.
 					checkboxarr.get(keyword).setForeground(ht.get(keyword));
@@ -216,8 +265,10 @@ public class FileOpener implements ActionListener {
 			}
 		}
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		jft.setEnabled(true);
 		enable();
 		
 		try {
@@ -226,13 +277,16 @@ public class FileOpener implements ActionListener {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
-		try {
-			update();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+
+		if (counter == 0) {
+			try {
+				update();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			setupCheck();
 		}
-		setupCheck();
+		counter++;
 	}
 }
